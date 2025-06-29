@@ -18,12 +18,14 @@ on:
 
 jobs:  
   test:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET (global.json)
         uses: actions/setup-dotnet@v3
-      - name: Build 
-        run: dotnet build eShop.Web.slnf
+      - name: Restore dependencies
+        run: dotnet restore eShop.Web.slnf
+      - name: Build with analyzers (fail on warnings)
+        run: dotnet build eShop.Web.slnf -warnaserror
       - name: Test
         run: dotnet test eShop.Web.slnf
