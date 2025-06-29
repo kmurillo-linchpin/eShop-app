@@ -21,15 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup .NET
+      - name: Setup .NET (global.json)
         uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.x'  # Minimum required for dotnet format [1][5]
       - name: Restore dependencies
         run: dotnet restore eShop.Web.slnf
-      - name: Check code formatting
-        run: dotnet format --verify-no-changes --no-restore eShop.Web.slnf  # Fails if formatting issues exist [2][6][8]
-      - name: Build 
-        run: dotnet build eShop.Web.slnf
+      - name: Build with analyzers (fail on warnings)
+        run: dotnet build eShop.Web.slnf -warnaserror
       - name: Test
         run: dotnet test eShop.Web.slnf
