@@ -17,7 +17,7 @@ on:
       - '.github/workflows/pr-validation-maui.yml'
 
 jobs:  
-  sonarcloud-analysis:
+  code-validation:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
