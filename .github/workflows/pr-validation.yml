@@ -30,4 +30,4 @@ jobs:
 
   sonarcloud-analysis:
     needs: unit-test-validation # Requires unit tests to succeed first
-    uses: ./.github/workflows/sonarcloud.yml # Path to your reusable workflow
+    uses: ./.github/workflows/sonarcloud-analysis.yml # Path to your reusable workflow
