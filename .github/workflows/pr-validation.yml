@@ -17,21 +17,38 @@ on:
       - '.github/workflows/pr-validation-maui.yml'
 
 jobs:  
-  test:
-    runs-on: windows-latest  # Required for code-analysis compatibility [1][5]
+  code-validation:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for SonarCloud branch analysis
+      
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.x'  # Minimum required: 3.1.201+ [1]
+      
+      - name: Install SonarScanner
+        run: dotnet tool install --global dotnet-sonarscanner
+      
+      - name: Begin SonarCloud Analysis
+        run: |
+          dotnet sonarscanner begin \
+            /key:"${{ secrets.SONAR_PROJECT_KEY }}" \
+            /organization:"${{ secrets.SONAR_ORGANIZATION }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.exclusions="**.md,src/ClientApp/**,tests/ClientApp.UnitTests/**,.github/workflows/pr-validation-maui.yml"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Restore dependencies
         run: dotnet restore eShop.Web.slnf
-      - name: Build 
-        run: dotnet build eShop.Web.slnf
-      - name: Test
-        run: dotnet test eShop.Web.slnf
-      - name: Run Static Code Analysis
-        uses: dotnet/code-analysis@v1
-        with:
-          build-breaking: true  # Fails build on violations [1]
+      
+      - name: Build with analyzers
+        run: dotnet build eShop.Web.slnf -warnaserror
+      
+      - name: Run tests
+        run: dotnet test eShop.Web.slnf --no-build --logger:trx
+      
+      - name: End SonarCloud Analysis
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
