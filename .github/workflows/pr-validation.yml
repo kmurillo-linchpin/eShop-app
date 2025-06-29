@@ -27,3 +27,7 @@ jobs:
         run: dotnet build eShop.Web.slnf
       - name: Test
         run: dotnet test eShop.Web.slnf
+
+  sonarcloud-analysis:
+    needs: unit-test-validation # Requires unit tests to succeed first
+    uses: ./.github/workflows/sonarcloud.yml # Path to your reusable workflow
