@@ -11,7 +11,6 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
 
     // - /basket/{id} "string" per unique basket
     private static RedisKey BasketKeyPrefix = "/basket/"u8.ToArray();
-
     // note on UTF8 here: library limitation (to be fixed) - prefixes are more efficient as blobs
 
     private static RedisKey GetBasketKey(string userId) => BasketKeyPrefix.Append(userId);
@@ -43,6 +42,7 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
             return null;
         }
 
+
         logger.LogInformation("Basket item persisted successfully.");
         return await GetBasketAsync(basket.BuyerId);
     }
@@ -52,4 +52,5 @@ public class RedisBasketRepository(ILogger<RedisBasketRepository> logger, IConne
 [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
 public partial class BasketSerializationContext : JsonSerializerContext
 {
+
 }
