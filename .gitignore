@@ -491,4 +491,6 @@ $RECYCLE.BIN/
 /playwright/.auth/
 /user.json
 .azure
+
+# Ignore File Sample
 NewFile-Ignore.txt
